@@ -1,12 +1,24 @@
 #include <iostream>
+#include <string>
 #include <vector>
 
 #include "csv.h"
 #include "hdf5_particle.h"
 
-int main() {
-  std::vector<mpm::HDF5Particle> pdata;  // = new HDF5Particle[nparticles];
 
+std::string get_filename(const std::string& s) {
+
+   size_t i = s.rfind('.', s.length());
+   if (i != std::string::npos) {
+     return(s.substr(0, i));
+   }
+   return("");
+}
+
+int main(int argc, char** argv) {
+  std::vector<mpm::HDF5Particle> pdata;  // = new HDF5Particle[nparticles];
+  std::string inputfile =  argv[1];
+  std::string fname = get_filename(inputfile) + ".csv";
   io::CSVReader<53> in("particles0000.csv");
   in.read_header(
       io::ignore_extra_column, "id", "mass", "volume", "pressure", "coord_x",
@@ -145,5 +157,35 @@ int main() {
     particle.svars[17] = svars_17;
     particle.svars[18] = svars_18;
     particle.svars[19] = svars_19;
+
+    pdata.emplace_back(particle);
   }
+
+  // Number of particles
+  const unsigned nparticles = pdata.size();
+
+  // Calculate the size and the offsets of our struct members in memory
+  const hsize_t NRECORDS = nparticles;
+
+  const hsize_t NFIELDS = mpm::hdf5::particle::NFIELDS;
+
+  hid_t file_id;
+  hsize_t chunk_size = 10000;
+  int* fill_data = NULL;
+  int compress = 0;
+
+  std::string filename = get_filename(inputfile) + ".h5";
+
+  // Create a new file using default properties.
+  file_id =
+      H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+
+  // make a table
+  H5TBmake_table(
+      "Table Title", file_id, "table", NFIELDS, NRECORDS,
+      mpm::hdf5::particle::dst_size, mpm::hdf5::particle::field_names,
+      mpm::hdf5::particle::dst_offset, mpm::hdf5::particle::field_type,
+      chunk_size, fill_data, compress, pdata.data());
+
+  H5Fclose(file_id);
 }
