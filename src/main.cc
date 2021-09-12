@@ -4,22 +4,13 @@
 
 #include "csv.h"
 #include "hdf5_particle.h"
-
-
-std::string get_filename(const std::string& s) {
-
-   size_t i = s.rfind('.', s.length());
-   if (i != std::string::npos) {
-     return(s.substr(0, i));
-   }
-   return("");
-}
+#include "io.h"
 
 int main(int argc, char** argv) {
   std::vector<mpm::HDF5Particle> pdata;  // = new HDF5Particle[nparticles];
   std::string inputfile =  argv[1];
   std::string fname = get_filename(inputfile) + ".csv";
-  io::CSVReader<53> in("particles0000.csv");
+  io::CSVReader<53> in(fname.c_str());
   in.read_header(
       io::ignore_extra_column, "id", "mass", "volume", "pressure", "coord_x",
       "coord_y", "coord_z", "displacement_x", "displacement_y",
@@ -32,7 +23,7 @@ int main(int argc, char** argv) {
       "svars_10", "svars_11", "svars_12", "svars_13", "svars_14", "svars_15",
       "svars_16", "svars_17", "svars_18", "svars_19");
 
-  unsigned id;
+  unsigned long long id;
   double mass;
   double volume;
   double pressure;
@@ -62,7 +53,7 @@ int main(int argc, char** argv) {
   double gamma_xz;
   double epsilon_v;
   unsigned status;
-  unsigned cell_id;
+  unsigned long long cell_id;
   unsigned material_id;
   unsigned nstate_vars;
   double svars_0;

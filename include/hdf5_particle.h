@@ -1,5 +1,5 @@
-#ifndef MPM_HDF5_H_
-#define MPM_HDF5_H_
+#ifndef CSV_HDF5_H_
+#define CSV_HDF5_H_
 
 // HDF5
 #include "hdf5.h"
@@ -69,4 +69,4 @@ extern const hid_t field_type[NFIELDS];
 
 }  // namespace mpm
 
-#endif  // MPM_HDF5_H_
+#endif  // CSV_HDF5_H_
