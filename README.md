@@ -18,7 +18,7 @@ dnf install -y clang clang-analyzer clang-tools-extra cmake cppcheck dnf-plugins
 ### TACC Stampede2/Frontera
 
 ```
-module load cmake/3.16.1 gcc/9.1.0 hdf5 
+module load cmake/3.16.1 intel hdf5 
 ```
 
 ## Compile
