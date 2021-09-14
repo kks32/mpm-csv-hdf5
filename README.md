@@ -32,7 +32,7 @@ cd mpm-csv-hdf5
 
 ### Compile and build
 ```
-mkdir build && cd build && cmake -DCMAKE_CXX_COMPILER=g++ ..
+mkdir build && cd build && cmake ..
 make clean && make -j 8
 ```
 
@@ -41,3 +41,7 @@ make clean && make -j 8
 ```
 ./csv-hdf5 particles0000.csv
 ```
+
+### Notes
+* If the cell_id is unknown set it to the max value of unsigned long long `18446744073709551615`.
+* When solving for a 2D system, set z-coordinates and nsize_z to 0.
